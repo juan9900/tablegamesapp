@@ -1,4 +1,5 @@
 import { Button } from "@/components/ui/button";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { createClient } from "@/lib/supabase/server";
 import Link from "next/link";
 
@@ -26,6 +27,23 @@ export default async function Page({
     .eq("organization_id", organizationId)
     .single();
 
+  if (!organization) {
+    return (
+      <div className="p-4">
+        <Card>
+          <CardHeader>
+            <CardTitle>Establecimiento no encontrado</CardTitle>
+          </CardHeader>
+          <CardContent>
+            <p>El establecimiento que buscas no existe.</p>
+            <Link href="/organizations" className="text-blue-500 underline">
+              Volver a la lista de establecimientos
+            </Link>
+          </CardContent>
+        </Card>
+      </div>
+    );
+  }
   return (
     <div className="p-4">
       <h1 className="text-xl uppercase font-bold">
@@ -52,7 +70,7 @@ export default async function Page({
         )}
         <Link
           className="border border-neutral-200 rounded-md w-full p-2 text-sm text-center font-medium"
-          href={`/organizations/${organization.organization_id}/settings`}
+          href={`/organizations/${organization.organization_id}/games`}
         >
           Administrar Juegos
         </Link>
