@@ -21,6 +21,8 @@ export function SignUpForm({
   ...props
 }: React.ComponentPropsWithoutRef<"div">) {
   const [email, setEmail] = useState("");
+  const [firstName, setFirstName] = useState("");
+  const [lastName, setLastName] = useState("");
   const [password, setPassword] = useState("");
   const [repeatPassword, setRepeatPassword] = useState("");
   const [error, setError] = useState<string | null>(null);
@@ -44,6 +46,10 @@ export function SignUpForm({
         email,
         password,
         options: {
+          data: {
+            user_firstname: firstName,
+            user_lastname: lastName,
+          },
           emailRedirectTo: `${window.location.origin}/protected`,
         },
       });
@@ -61,15 +67,15 @@ export function SignUpForm({
       <Card>
         <CardHeader>
           <CardTitle className="text-2xl">Sign up</CardTitle>
-          <CardDescription>Create a new account</CardDescription>
+          <CardDescription>Crear una nueva cuenta</CardDescription>
         </CardHeader>
         <CardContent>
           <form onSubmit={handleSignUp}>
             <div className="flex flex-col gap-6">
               <div className="grid gap-2">
-                <Label htmlFor="email">Email</Label>
+                <Label htmlFor="email">Correo electrónico</Label>
                 <Input
-                  id="email"
+                  id="user_email"
                   type="email"
                   placeholder="m@example.com"
                   required
@@ -78,8 +84,30 @@ export function SignUpForm({
                 />
               </div>
               <div className="grid gap-2">
+                <Label htmlFor="email">Nombre</Label>
+                <Input
+                  id="user_name"
+                  type="text"
+                  placeholder="John"
+                  required
+                  value={firstName}
+                  onChange={(e) => setFirstName(e.target.value)}
+                />
+              </div>
+              <div className="grid gap-2">
+                <Label htmlFor="email">Apellido</Label>
+                <Input
+                  id="user_lastname"
+                  type="text"
+                  placeholder="Doe"
+                  required
+                  value={lastName}
+                  onChange={(e) => setLastName(e.target.value)}
+                />
+              </div>
+              <div className="grid gap-2">
                 <div className="flex items-center">
-                  <Label htmlFor="password">Password</Label>
+                  <Label htmlFor="password">Contraseña</Label>
                 </div>
                 <Input
                   id="password"
@@ -91,7 +119,7 @@ export function SignUpForm({
               </div>
               <div className="grid gap-2">
                 <div className="flex items-center">
-                  <Label htmlFor="repeat-password">Repeat Password</Label>
+                  <Label htmlFor="repeat-password">Repetir contraseña</Label>
                 </div>
                 <Input
                   id="repeat-password"
@@ -103,13 +131,13 @@ export function SignUpForm({
               </div>
               {error && <p className="text-sm text-red-500">{error}</p>}
               <Button type="submit" className="w-full" disabled={isLoading}>
-                {isLoading ? "Creating an account..." : "Sign up"}
+                {isLoading ? "Creando cuenta..." : "Crear cuenta"}
               </Button>
             </div>
             <div className="mt-4 text-center text-sm">
-              Already have an account?{" "}
+              ¿Ya tienes una cuenta?{" "}
               <Link href="/auth/login" className="underline underline-offset-4">
-                Login
+                Iniciar sesión
               </Link>
             </div>
           </form>
