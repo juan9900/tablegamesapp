@@ -66,3 +66,7 @@
     @apply bg-background text-foreground;
   }
 }
+
+h1 {
+  @apply font-bold text-xl pb-4;
+}
