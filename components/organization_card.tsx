@@ -1,3 +1,6 @@
+"use client";
+
+import { useRouter } from "next/navigation";
 import {
   Card,
   CardContent,
@@ -19,8 +22,14 @@ export default function OrganizationCard({
 }: {
   organization: Organization;
 }) {
+  const router = useRouter();
   return (
-    <Card className="flex flex-row items-center pl-5">
+    <Card
+      onClick={() =>
+        router.push(`/organizations/${organization.organization_id}`)
+      }
+      className="flex flex-row items-center pl-5 hover:bg-neutral-100 cursor-pointer"
+    >
       <div className="w-10 h-10 bg-red-600 rounded-md"></div>
       <CardHeader>
         <CardTitle>

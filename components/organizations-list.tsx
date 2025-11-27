@@ -43,22 +43,22 @@ export default function OrganizationsList() {
   }, []);
   return (
     <div className={cn("flex flex-col gap-6 ")}>
-      <Card className="p-3">
+      <Card className="p-4">
         <CardHeader>
           <CardTitle className="text-2xl">Establecimientos</CardTitle>
           <CardDescription>
             Escoge el establecimiento al que deseas ingresar
           </CardDescription>
         </CardHeader>
-        <CardContent className="max-h-[60vh] overflow-y-auto gap-2 flex flex-col">
+        <CardContent className="max-h-[60vh] overflow-y-auto gap-2 flex flex-col p-0">
           {organizations.map((org) => (
             <OrganizationCard key={org.organization_id} organization={org} />
           ))}
         </CardContent>
         <Button
-          variant={"outline"}
+          variant={"default"}
           onClick={() => router.push("/organizations/new")}
-          className="text-sm w-full"
+          className="text-sm w-full mt-2"
         >
           Crear nuevo establecimiento
         </Button>
