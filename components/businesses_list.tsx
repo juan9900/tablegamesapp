@@ -24,11 +24,11 @@ export default function BusinessesList() {
   const supabase = createClient();
   const router = useRouter();
   const user = useUser();
-  const [organizations, setOrganizations] = useState<any[]>([]);
 
   const { data, isPending, error } = useQuery({
-    queryKey: ["businesses"],
+    queryKey: ["businesses", user.user?.id],
     queryFn: async () => {
+      console.log("User in business list:", user);
       const { data, error } = await supabase
         .from("business_user")
         .select("user_id, business_data:businesses(*)")
@@ -42,7 +42,7 @@ export default function BusinessesList() {
       console.log(data);
       return data;
     },
-    enabled: !!user.user,
+    enabled: !!user.user?.id,
   });
 
   return (
@@ -54,7 +54,7 @@ export default function BusinessesList() {
             Escoge el negocio al que deseas ingresar
           </CardDescription>
         </CardHeader>
-        <CardContent className="max-h-[60vh] h-full overflow-y-auto gap-2 flex flex-col p-0">
+        <CardContent className="max-h-[60vh] h-full overflow-y-auto gap-2 flex flex-col p-0 pb-10">
           {data && !isPending ? (
             data.map((business: any) => (
               <OrganizationCard

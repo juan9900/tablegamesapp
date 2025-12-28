@@ -14,10 +14,28 @@ export const UserProvider = ({ children }: { children: React.ReactNode }) => {
       const {
         data: { user },
       } = await supabase.auth.getUser();
+      console.log("i received user:", user);
       setUser(user);
     };
     fetchUser();
   }, []);
+
+  useEffect(() => {
+    const { data: authListener } = supabase.auth.onAuthStateChange(
+      (event, session) => {
+        if (event === "SIGNED_IN") {
+          setUser(session?.user || null);
+        }
+        if (event === "SIGNED_OUT") {
+          setUser(null);
+        }
+      }
+    );
+
+    return () => {
+      authListener.subscription.unsubscribe();
+    };
+  }, [supabase]);
 
   return (
     <UserContext.Provider value={{ user }}>{children}</UserContext.Provider>
