@@ -1,4 +1,4 @@
-import OrganizationsList from "@/components/organizations-list";
+import BusinessesList from "@/components/businesses_list";
 import { createClient } from "@/utils/supabase/server";
 
 export default async function Instruments({
@@ -8,7 +8,7 @@ export default async function Instruments({
   return (
     <div className="flex min-h-svh w-full items-center justify-center p-6 md:p-10">
       <div className="w-full max-w-sm">
-        <OrganizationsList />
+        <BusinessesList />
       </div>
     </div>
   );
