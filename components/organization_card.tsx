@@ -8,36 +8,25 @@ import {
   CardHeader,
   CardTitle,
 } from "./ui/card";
+import { IBusiness } from "@/types";
+import { Building2 } from "lucide-react";
 
-interface Organization {
-  organization_id: number;
-  organization_data: {
-    organization_name: string;
-    organization_address: string;
-  };
-  admin: boolean;
-}
-export default function OrganizationCard({
-  organization,
+export default function organizationCard({
+  business,
 }: {
-  organization: Organization;
+  business: IBusiness;
 }) {
   const router = useRouter();
   return (
     <Card
-      onClick={() =>
-        router.push(`/organizations/${organization.organization_id}`)
-      }
+      onClick={() => router.push(`/businesses/${business.id}/locations`)}
       className="flex flex-row items-center pl-5 hover:bg-neutral-100 cursor-pointer"
     >
-      <div className="w-10 h-10 bg-red-600 rounded-md"></div>
+      <div className="w-12 h-12  rounded-md flex justify-center items-center">
+        <Building2 size={32} color="#267a25" />
+      </div>
       <CardHeader>
-        <CardTitle>
-          {organization.organization_data.organization_name}
-        </CardTitle>
-        <CardDescription>
-          {organization.organization_data.organization_address}
-        </CardDescription>
+        <CardTitle>{business.name}</CardTitle>
       </CardHeader>
     </Card>
   );

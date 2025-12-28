@@ -13,21 +13,21 @@ export default async function Page({
   const user = await supabase.auth.getUser();
 
   const { data: userAccess } = await supabase
-    .from("organization_user")
+    .from("business_user")
     .select("admin")
     .eq("user_id", user.data.user?.id)
-    .eq("organization_id", organizationId)
+    .eq("business_id", organizationId)
     .single();
 
   console.log(userAccess);
 
-  const { data: organization } = await supabase
-    .from("organizations")
+  const { data: business } = await supabase
+    .from("businesses")
     .select("*")
-    .eq("organization_id", organizationId)
+    .eq("id", organizationId)
     .single();
 
-  if (!organization) {
+  if (!business) {
     return (
       <div className="p-4">
         <Card>
@@ -37,7 +37,7 @@ export default async function Page({
           <CardContent>
             <p>El establecimiento que buscas no existe.</p>
             <Link href="/organizations" className="text-blue-500 underline">
-              Volver a la lista de establecimientos
+              Volver a la lista de negocios
             </Link>
           </CardContent>
         </Card>
@@ -46,23 +46,21 @@ export default async function Page({
   }
   return (
     <div className="p-4">
-      <h1 className="text-xl uppercase font-bold">
-        {organization.organization_name}
-      </h1>
-      <p>{organization.organization_address}</p>
-
+      <h1 className="text-xl uppercase font-bold">{business.business_name}</h1>
+      <p>{business.business_address}</p>
+      {JSON.stringify(business)}
       <div className="flex flex-col gap-2 pt-5">
         {userAccess && userAccess.admin && (
           <>
             <Link
               className="border border-neutral-200 rounded-md w-full p-2 text-sm text-center font-medium"
-              href={`/organizations/${organization.organization_id}/settings`}
+              href={`/organizations/${business.business_id}/settings`}
             >
               Administrar Establecimiento
             </Link>
             <Link
               className="border border-neutral-200 rounded-md w-full p-2 text-sm text-center font-medium"
-              href={`/organizations/${organization.organization_id}/settings`}
+              href={`/organizations/${business.business_id}/settings`}
             >
               Administrar Moderadores
             </Link>
@@ -70,7 +68,7 @@ export default async function Page({
         )}
         <Link
           className="border border-neutral-200 rounded-md w-full p-2 text-sm text-center font-medium"
-          href={`/organizations/${organization.organization_id}/games`}
+          href={`/organizations/${business.organization_id}/games`}
         >
           Administrar Juegos
         </Link>
