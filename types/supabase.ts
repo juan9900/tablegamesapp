@@ -16,18 +16,21 @@ export type Database = {
     Tables: {
       business_user: {
         Row: {
-          admin: boolean
           business_id: string | null
+          id: number
+          role: string | null
           user_id: string | null
         }
         Insert: {
-          admin?: boolean
           business_id?: string | null
+          id?: number
+          role?: string | null
           user_id?: string | null
         }
         Update: {
-          admin?: boolean
           business_id?: string | null
+          id?: number
+          role?: string | null
           user_id?: string | null
         }
         Relationships: [
@@ -49,35 +52,21 @@ export type Database = {
       }
       businesses: {
         Row: {
-          address: string | null
           created_at: string
           id: string
           name: string
-          owner_id: string | null
         }
         Insert: {
-          address?: string | null
           created_at?: string
           id?: string
           name: string
-          owner_id?: string | null
         }
         Update: {
-          address?: string | null
           created_at?: string
           id?: string
           name?: string
-          owner_id?: string | null
         }
-        Relationships: [
-          {
-            foreignKeyName: "organizations_owner_id_fkey"
-            columns: ["owner_id"]
-            isOneToOne: false
-            referencedRelation: "users"
-            referencedColumns: ["user_id"]
-          },
-        ]
+        Relationships: []
       }
       games: {
         Row: {
@@ -156,6 +145,42 @@ export type Database = {
           },
         ]
       }
+      location_user: {
+        Row: {
+          id: number
+          location_id: number | null
+          role: string | null
+          user_id: string | null
+        }
+        Insert: {
+          id?: number
+          location_id?: number | null
+          role?: string | null
+          user_id?: string | null
+        }
+        Update: {
+          id?: number
+          location_id?: number | null
+          role?: string | null
+          user_id?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "location_user_location_id_fkey"
+            columns: ["location_id"]
+            isOneToOne: false
+            referencedRelation: "locations"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "location_user_user_id_fkey"
+            columns: ["user_id"]
+            isOneToOne: false
+            referencedRelation: "users"
+            referencedColumns: ["user_id"]
+          },
+        ]
+      }
       locations: {
         Row: {
           address: string | null
@@ -222,6 +247,15 @@ export type Database = {
           max_players_input: number
           min_players_input: number
           organization_id_input: number
+        }
+        Returns: number
+      }
+      create_new_business: { Args: { business_name: string }; Returns: string }
+      create_new_location: {
+        Args: {
+          business_id: string
+          new_location_address: string
+          new_location_name: string
         }
         Returns: number
       }

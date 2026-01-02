@@ -18,31 +18,43 @@ import OrganizationCard from "./organization_card";
 import { useQuery } from "@tanstack/react-query";
 import { Spinner } from "./ui/spinner";
 import { IBusiness } from "@/types";
+import LocationCard from "./location-card";
 
 export default function LocationsList() {
   const supabase = createClient();
   const router = useRouter();
-  const [organizations, setOrganizations] = useState<any[]>([]);
   const { businessId } = useParams();
-  console.log(businessId);
 
   const { data, isPending, error } = useQuery({
     queryKey: ["locations"],
     queryFn: async () => {
       const user = await supabase.auth.getUser();
+      if (!user.data.user) return null;
+      // const { data, error } = await supabase
+      //   .from("location_user")
+      //   .select("user_id, role, location_data:locations(*, businesses(id))")
+      //   .eq("location_data.businesses.id", businessId)
+
+      //   .eq("user_id", user.data.user?.id);
       const { data, error } = await supabase
-        .from("location_user")
-        .select("*,  locations(*)")
-        .eq("location_user.user_id", user.data.user?.id);
+        .from("business_user")
+        .select("user_id, business_id, businesses(id, locations!inner(*))")
+        .eq("user_id", user.data.user?.id)
+        .eq("business_id", String(businessId))
+        .single();
 
       if (error) {
-        console.error("Error fetching organizations:", error);
+        if (error.code !== "PGRST116") {
+          console.error("Error fetching organizations:", error);
+        }
         return null;
       }
 
       console.log(data);
-      return data;
+
+      return data?.businesses;
     },
+    enabled: !!businessId && !!supabase,
   });
 
   return (
@@ -55,15 +67,26 @@ export default function LocationsList() {
           </CardDescription>
         </CardHeader>
         <CardContent className="max-h-[60vh] h-full overflow-y-auto gap-2 flex flex-col p-0">
-          {data ? (
-            data.map((org) => (
-              <OrganizationCard key={org.business_id} business={org} />
-            ))
-          ) : (
+          {isPending ? (
             <div className="flex items-center justify-center py-10">
               <Spinner className="size-8" />
             </div>
+          ) : data && data.locations && data.locations.length > 0 ? (
+            data.locations.map((loc: any) => (
+              <LocationCard key={loc.id} location={loc} />
+            ))
+          ) : (
+            <div className="flex justify-center items-center py-5 text-center text-sm">
+              <span>
+                Parece que aún no tienes ubicaciones para este negocio... 😓
+              </span>
+            </div>
           )}
+          {/* {data ? (
+            
+          ) : (
+            
+          )} */}
         </CardContent>
         <Button
           variant={"default"}

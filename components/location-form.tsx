@@ -22,34 +22,38 @@ export function LocationForm({
   className,
   ...props
 }: React.ComponentPropsWithoutRef<"div">) {
-  const [organizationName, setorganizationName] = useState("");
-  const [organizationAddress, setorganizationAddress] = useState("");
+  const [locationName, setLocationName] = useState("");
+  const [locationAddress, setLocationAddress] = useState("");
   const [error, setError] = useState<string | null>(null);
   const [isLoading, setIsLoading] = useState(false);
   const router = useRouter();
-  const queryClient = new QueryClient();
   const { businessId } = useParams();
+
+  const queryClient = new QueryClient();
 
   const createMutation = useMutation({
     mutationFn: async (organizationName: string) => {
       try {
-        const supabase = createClient();
-        const { data: locationData, error: locationError } = await supabase.rpc(
-          "create_new_location",
-          {
-            location_name: organizationName,
-            location_address: organizationAddress,
+        const response = await fetch("/api/locations", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
             business_id: businessId,
-          }
-        );
+            new_location_name: locationName,
+            new_location_address: locationAddress,
+          }),
+        });
 
-        if (locationError) {
-          throw locationError;
+        if (!response.ok) {
+          throw new Error("Error creating business");
         }
 
-        console.log("location created:", locationData);
+        const data = await response.json();
+        console.log("Business created:", data);
       } catch (error) {
-        console.log("Error creating location:", error);
+        console.log("Error creating business:", error);
         throw error;
       }
     },
@@ -59,13 +63,13 @@ export function LocationForm({
     },
   });
 
-  const handleCreateorganization = async (e: React.FormEvent) => {
+  const handleCreateLocation = async (e: React.FormEvent) => {
     e.preventDefault();
     const supabase = createClient();
     setIsLoading(true);
     setError(null);
 
-    await createMutation.mutate(organizationName);
+    await createMutation.mutate(locationName);
     setIsLoading(false);
   };
 
@@ -77,7 +81,7 @@ export function LocationForm({
           <CardDescription>Crea una nueva ubicación</CardDescription>
         </CardHeader>
         <CardContent>
-          <form onSubmit={handleCreateorganization}>
+          <form onSubmit={handleCreateLocation}>
             <div className="flex flex-col gap-6">
               <div className="grid gap-2">
                 <Label htmlFor="email">Nombre de la ubicación</Label>
@@ -86,8 +90,8 @@ export function LocationForm({
                   type="text"
                   placeholder="Mi ubicación"
                   required
-                  value={organizationName}
-                  onChange={(e) => setorganizationName(e.target.value)}
+                  value={locationName}
+                  onChange={(e) => setLocationName(e.target.value)}
                 />
               </div>
               <div className="grid gap-2">
@@ -97,8 +101,8 @@ export function LocationForm({
                   type="text"
                   placeholder="Dirección"
                   required
-                  value={organizationAddress}
-                  onChange={(e) => setorganizationAddress(e.target.value)}
+                  value={locationAddress}
+                  onChange={(e) => setLocationAddress(e.target.value)}
                 />
               </div>
 

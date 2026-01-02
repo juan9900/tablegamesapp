@@ -1,8 +1,7 @@
 "use client";
 
 import { createContext, useContext, useState, useEffect } from "react";
-import { createClient } from "../../utils/supabase/client";
-
+import { createClient } from "@/lib/supabase/client";
 const UserContext = createContext<any>(null);
 
 export const UserProvider = ({ children }: { children: React.ReactNode }) => {
